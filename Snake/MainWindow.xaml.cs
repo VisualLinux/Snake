@@ -15,25 +15,30 @@ namespace Snake
     public partial class MainWindow : Window
     {
         private List<SnakeRectangle> Rectangles;
+        private Snake Snake;
         public MainWindow()
         {
             Rectangles = new List<SnakeRectangle>();
             InitializeComponent();
             AddRectangles();
+            Rectangles.Where(x => x.Row == 0 && x.Column <= 3).ToList().ForEach(x => x.Rectangle.Fill = Brushes.Black);
+            Snake = new Snake(4, GetFilledRectangles().ToList());
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Rectangles.Where(x=>x.Row==0&&x.Column<=3).ToList().ForEach(x=>x.Rectangle.Fill=Brushes.Black);
+            Rectangles.ForEach(x=>x.Rectangle.Fill=Brushes.Transparent);
+            Snake.Rectangles.ForEach(x => GetRectangle(x).Rectangle.Fill = Brushes.Black);
+            MoveSnake(Directions.Down);
         }
 
         private void AddRectangles()
         {
             for (int i = 0; i < 100; i++)
             {
-                var column = (int)Math.Floor(i / 10d);
-                var row = i - 10 * column;
-                var rectangle = new SnakeRectangle(new Rectangle(),column,row);
+                var row = (int)Math.Floor(i / 10d);
+                var column = i - 10 * row;
+                var rectangle = new SnakeRectangle(new Rectangle(), column, row);
                 Rectangles.Add(rectangle);
                 Grid.SetColumn(rectangle.Rectangle, column);
                 Grid.SetRow(rectangle.Rectangle, row);
@@ -44,51 +49,20 @@ namespace Snake
 
         private void MoveSnake(Directions direction)
         {
-            var filled = GetFilledRectangles();
-            switch (direction)
-            {
-                    case Directions.Down:
-                        filled[0].Rectangle.Fill = Brushes.Transparent;
-                        
-                    break;
-            }
+            Snake.Rectangles.RemoveAt(0);
+            var nextRectangle = Snake.Rectangles.Last().GetNextRectangle(direction, grid.ColumnDefinitions.Count - 1,
+                grid.RowDefinitions.Count - 1);
+            Snake.Rectangles.Add(Rectangles.Where(x => x.SamePosition(nextRectangle)).ToList()[0]);
         }
 
         private SnakeRectangle[] GetFilledRectangles()
         {
             return Rectangles.Where(x => Equals(x.Rectangle.Fill, Brushes.Black)).ToArray();
         }
-    }
 
-    public enum Directions
-    {
-        Up,
-        Down,
-        Right,
-        Left
-    }
-
-    public class SnakeRectangle
-    {
-        public Rectangle Rectangle;
-        public int Row;
-        public int Column;
-
-        public SnakeRectangle()
+        private SnakeRectangle GetRectangle(SnakeRectangle rectangle)
         {
-            
-        }
-
-        public SnakeRectangle(Rectangle rectangle)
-        {
-            Rectangle = rectangle;
-        }
-
-        public SnakeRectangle(Rectangle rectangle, int column, int row)
-        {
-            Rectangle = rectangle;
-            Row = row;
-            Column = column;
+            return Rectangles.Where(x => x == rectangle).ToList()[0];
         }
     }
 }

@@ -10,8 +10,6 @@
         <Button Content="Button" HorizontalAlignment="Left" Height="53" Margin="165,238,0,0" VerticalAlignment="Top" Width="119" Click="Button_Click"/>
         <Grid x:Name="grid" HorizontalAlignment="Left" Height="169" Margin="54,36,0,0" VerticalAlignment="Top" Width="367" Background="#FFFFC9C9">
             <Grid.RowDefinitions>
-                <RowDefinition>
-                </RowDefinition>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -24,9 +22,6 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
